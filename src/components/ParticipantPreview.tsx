@@ -99,7 +99,7 @@ function ParticipantPreview({ participantId, canRate }: {participantId: Number, 
         :
         (alreadyRated==false)?(<img className="object-contain rounded-full w-10 h-10" src="../../thumb_down_select.png" alt="Thumb up, selected" onClick={handleThumbDownClick}></img>)
         :(null)}
-        {(alreadyRated == null)?
+        {(canRate && alreadyRated == null)?
         (<button className="h-10 flex items-center bg-green-500 hover:bg-green-700 p-4 rounded-lg font-bold " onClick={handleSubmitClick}>Submit</button>):(null)}
         
       </div>
