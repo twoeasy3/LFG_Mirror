@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Session, buildDateStringFromStamp } from "../bin/SessionLogic";
-import { useAppName } from "./AppNameProvider";
 import { checkIfOwnGame, GameData } from "../bin/GetOwnedGames";
 import { useNavigate } from "react-router-dom";
 import { UserProfileInterface } from "../bin/UserProfileLogic";
@@ -19,7 +18,6 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
       <div className="SESSION_PREVIEW_CONTAINER justify-center w-full mb-5 mt-5 mr-2 ml-2 flex flex-row items-top  p-1"></div>
     );
   } else {
-    const appNameDictionary = useAppName();
     const ownedGamesString: string | null = localStorage.getItem("ownedGames");
     const ownedGames: GameData[] | null = ownedGamesString
       ? JSON.parse(ownedGamesString)

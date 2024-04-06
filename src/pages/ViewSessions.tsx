@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import {
-  getAllSessions,
   SessionDataResponse,
   Session,
   userOwnsGameFromSession,
@@ -53,7 +52,7 @@ function groupSessionsIntoRowsOfTwo(
   }
   console.log(`After: `, allSessions.sessions);
   console.log(allSessions.sessions);
-  allSessions.sessions.forEach((session, index) => {
+  allSessions.sessions.forEach((session, _index) => {
     const owned = userOwnsGameFromSession(session);
 
     if ((!owned && showNotOwned) || owned) {

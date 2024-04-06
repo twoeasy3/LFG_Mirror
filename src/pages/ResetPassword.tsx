@@ -12,10 +12,9 @@ const ResetPassword: React.FC = () => {
     const [passwordValidPrompt, togglePasswordValidPrompt] = useState(false);
     const [passwordMismatchPrompt, togglePasswordMismatchPrompt] = useState(false);
     const [user, setUser] = useState<UserProfileInterface|undefined>(undefined);
-    const [emailToken, setEmailToken] = useState(useParams().emailToken);
     const [dialogVisible, setDialogVisible] = useState(false);
     const [tokenExpire, setTokenExpire] = useState(false);
-
+    const emailToken = useParams().emailToken
     if (!emailToken) {
         return(
             <div>

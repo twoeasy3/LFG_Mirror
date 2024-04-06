@@ -1,11 +1,9 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getUserFromUsername, updateUser, UserProfileInterface } from "../bin/UserProfileLogic";
-import { getUser } from "../bin/UserLogin";
 
 function EditProfile() {
   const user = localStorage.getItem("username");
-  const steamID = localStorage.getItem("steamID");
   console.log(user);
   if (!user) {
     return <div>No user logged in</div>;

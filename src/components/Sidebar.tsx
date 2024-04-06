@@ -5,7 +5,6 @@ import { useState } from "react";
 function Sidebar({ buttons }: { buttons: string[] }) {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
-    const steamID = localStorage.getItem("steamID")
     const username = localStorage.getItem("username")
 
     const routeMapping: { [key: string]: string } = {
