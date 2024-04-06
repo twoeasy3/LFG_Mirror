@@ -5,7 +5,7 @@ export interface GameData{
 }
 
 export async function getOwnedGames(steamID: string): Promise<any> {
-    const proxyLink: string = `http://twoeasy3.pythonanywhere.com/api/getSteamGames/${steamID}`;
+    const proxyLink: string = `https://twoeasy3.pythonanywhere.com/api/getSteamGames/${steamID}`;
 
     try {
         const response = await fetch(proxyLink);

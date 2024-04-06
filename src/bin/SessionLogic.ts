@@ -180,7 +180,7 @@ export function buildDateStringFromStamp(timeStamp:string):string{
 }
 
 export async function getAppInfo(appid: number): Promise<any> {
-    const proxyLink: string = `http://twoeasy3.pythonanywhere.com/api/getGameInfo/${appid}`;
+    const proxyLink: string = `https://twoeasy3.pythonanywhere.com/api/getGameInfo/${appid}`;
 
     try {
         const response = await fetch(proxyLink);

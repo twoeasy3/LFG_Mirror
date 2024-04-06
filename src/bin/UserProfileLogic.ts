@@ -114,7 +114,7 @@ export async function getUserFromEmail(email:string):Promise<UserProfileInterfac
 export async function fetchAvatar(steamid: string):Promise<string>{
     try {
         const response = await axios.get(
-            `http://twoeasy3.pythonanywhere.com/api/getSteamPicture/${steamid}`
+            `https://twoeasy3.pythonanywhere.com/api/getSteamPicture/${steamid}`
         );
         if (response){
             return response.data;
@@ -138,7 +138,7 @@ interface mostPlayedGame {
 export async function getMostPlayedGames(steamid: string):Promise<mostPlayedGame|undefined>{
     try {
         const response = await axios.get(
-            `http://twoeasy3.pythonanywhere.com/api/getMostPlayedGame/${steamid}`
+            `https://twoeasy3.pythonanywhere.com/api/getMostPlayedGame/${steamid}`
         );
         if (response){
             return response.data;
@@ -153,7 +153,7 @@ export async function getMostPlayedGames(steamid: string):Promise<mostPlayedGame
 
 //Depreciated. Superceded by getUserBySteam() 
 /* export async function getUserProfile(steamID: string|undefined): Promise<UserProfileInterface|undefined> {
-    const apiLink: string = `http://twoeasy3.pythonanywhere.com/api/getProfile/${steamID}`;
+    const apiLink: string = `https://twoeasy3.pythonanywhere.com/api/getProfile/${steamID}`;
 
     try {
         const response = await fetch(apiLink);

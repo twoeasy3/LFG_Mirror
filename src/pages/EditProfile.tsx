@@ -66,7 +66,7 @@ function EditProfile() {
 /*   useEffect(()=>{
     const fetchData = async () => {
       try{
-        const response = await axios.get(`http://twoeasy3.pythonanywhere.com/api/getSteamPicture/${steamID}`);
+        const response = await axios.get(`https://twoeasy3.pythonanywhere.com/api/getSteamPicture/${steamID}`);
         console.log(response);
         setProfilePicture(response.data);
       }

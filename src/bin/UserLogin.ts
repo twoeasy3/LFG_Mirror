@@ -9,7 +9,7 @@ interface LoginInterface {
 export const userLogin = async (username: string, password:string) => {
     let loginAttempt:LoginInterface = {'username':username, 'password': password}
     try {
-        const response = await axios.post('http://twoeasy3.pythonanywhere.com/api/log_in', loginAttempt);
+        const response = await axios.post('https://twoeasy3.pythonanywhere.com/api/log_in', loginAttempt);
         console.log('DEBUG login attempt:', response.data);
         return response.data
     } catch (error) {
@@ -39,7 +39,7 @@ export const getUser = async (username:string) => {
 export const changePassword = async (username: string, password:string) => {
     let passwordUpdate:LoginInterface = {'username':username, 'password': password} //Convenient that this interface fits also huh
     try {
-        const response = await axios.post('http://twoeasy3.pythonanywhere.com/api/resetPassword', passwordUpdate);
+        const response = await axios.post('https://twoeasy3.pythonanywhere.com/api/resetPassword', passwordUpdate);
         console.log('DEBUG change pass attempt:', response.data);
         return response.data
     } catch (error) {
@@ -48,7 +48,7 @@ export const changePassword = async (username: string, password:string) => {
 };
 
 export const sendResetEmail = async (email:string) => {
-    const apiGetLink = `http://twoeasy3.pythonanywhere.com/api/forgetPassword/${email}`
+    const apiGetLink = `https://twoeasy3.pythonanywhere.com/api/forgetPassword/${email}`
     try{
         const response = await axios.get(apiGetLink);
         console.log("Debug sendResetEmail attempt: ", response.data);
@@ -59,7 +59,7 @@ export const sendResetEmail = async (email:string) => {
 }
 
 export const authEmailToken = async (jwt_token: string) => {
-    const apiGetLink = 'http://twoeasy3.pythonanywhere.com/api/authEmailToken';
+    const apiGetLink = 'https://twoeasy3.pythonanywhere.com/api/authEmailToken';
     try {
         const response = await axios.get(apiGetLink, {
             headers: {
