@@ -8,7 +8,7 @@ interface Props {
   steamID: string;
 }
 
-const PromiseOwnedGameSelect: React.FC<Props> = ({ onSelectChange, steamID }) => {
+const PromiseOwnedGameSelect: React.FC<Props> = ({ onSelectChange}) => {
   const [optionsReady, setOptionsReady] = useState(false);
   const [options, setOptions] = useState<{ value: number; label: string }[]>([]);
 

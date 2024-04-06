@@ -1,9 +1,7 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { UserProfileInterface, fetchAvatar, getMostPlayedGames, getUserFromUsername } from "../bin/UserProfileLogic";
-import { getUser } from "../bin/UserLogin";
-
+import {fetchAvatar, getMostPlayedGames, getUserFromUsername } from "../bin/UserProfileLogic";
 function UserProfile() {
   const currentUser = localStorage.getItem("username");
 
@@ -14,7 +12,6 @@ function UserProfile() {
   const navigate = useNavigate();
   const username = useParams().username;
   const [aboutMe, setAboutMe] = useState("loading");
-  const [steamID, setSteamID] = useState("loading");
   const [rating, setRating] = useState<number | string>("loading");
   const [steamLink, setSteamLink] = useState("https://store.steampowered.com/");
   const [mostPlayedGame, setMostPlayedGame] = useState("loading");
@@ -55,7 +52,6 @@ function UserProfile() {
         console.log("userprofile:", userProfile);
 
         if (userProfile) {
-          setSteamID(userProfile.steamID);
           setAboutMe(userProfile.about_me);
           setRating(userProfile.rating);
           setSteamLink(`steam://url/SteamIDPage/${userProfile.steamID}`);

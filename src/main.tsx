@@ -15,7 +15,6 @@ import RequestsPage from "./pages/RequestsPage.tsx";
 import SingleSession from "./pages/SingleSession.tsx";
 import ViewHostedSessions from "./pages/ViewHostedSessions.tsx";
 import ViewJoinedSessions from "./pages/ViewJoinedSessions.tsx";
-import UserProfileRate from "./pages/UserProfileRate.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import EditSession from "./pages/EditSession.tsx";
 
@@ -44,10 +43,6 @@ const router = createBrowserRouter([
   {
     path: "/UserProfile/EditProfile/:username",
     element: <EditProfile />,
-  },
-  {
-    path: "/UserProfileRate/:username",
-    element: <UserProfileRate />,
   },
   {
     path: "/ViewSessions",

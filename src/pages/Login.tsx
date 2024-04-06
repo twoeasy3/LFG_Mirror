@@ -3,9 +3,7 @@ import { ChangeEvent, useState } from 'react';
 import { getUser, userLogin } from '../bin/UserLogin';
 import { useNavigate } from "react-router-dom"
 import { buildOwnedGames } from '../bin/GetOwnedGames';
-import { useAppName } from '../components/AppNameProvider';
 import { TailSpin } from 'react-loader-spinner';
-import { fetchAvatar } from '../bin/UserProfileLogic';
 
 enum LoginMessage {
     SteamPrivate =  "Steam account must be public.",

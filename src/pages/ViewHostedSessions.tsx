@@ -48,7 +48,7 @@ function groupSessionsIntoRowsOfTwo(
   }
   console.log(`After: `, allSessions.sessions);
   console.log(allSessions.sessions);
-  allSessions.sessions.forEach((session, index) => {
+  allSessions.sessions.forEach((session, _index) => {
     tempRow.push(session);
     console.log(session.session_name);
     console.log(tempRow);

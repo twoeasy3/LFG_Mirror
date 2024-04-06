@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { getAllSessions, SessionDataResponse } from "../bin/SessionLogic";
-import { SessionPreview } from "../components/SessionPreview";
 
 function RequestsPage() {
   const user = localStorage.getItem("username");
@@ -129,6 +128,7 @@ function RequestsPage() {
             <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
               Reject
             </button>
+            {(allSessions)? (null) : (null)}
           </div>
         </div>
       </div>
