@@ -4,48 +4,20 @@ import { SessionDataResponse, Session, getHostedSessions } from '../bin/SessionL
 import { SessionPreview } from '../components/SessionPreview';
 import Topbar from '../components/Topbar';
 
-enum SortType {
-  None,
-  Time,
-  Name,
-  SessionName,
-}
 
 function compareTime(a: { time: string }, b: { time: string }): number {
   const timeA = new Date(a.time);
   const timeB = new Date(b.time);
-  return timeA.getTime() - timeB.getTime();
-}
-
-function sortByName(
-  a: { session_name: string },
-  b: { session_name: string }
-): number {
-  if (a.session_name.toLowerCase() < b.session_name.toLowerCase()) {
-      return -1;
-  }
-  if (a.session_name.toLowerCase() > b.session_name.toLowerCase()) {
-      return 1;
-  }
-  return 0;
+  return timeB.getTime() - timeA.getTime();
 }
 
 function groupSessionsIntoRowsOfTwo(
-  allSessions: { sessions: Session[] },
-  sortType: SortType
+  allSessions: { sessions: Session[] }
 ): Session[][] {
   const SessionRowsOfTwo: Session[][] = [];
   let tempRow: Session[] = [];
   console.log(`Before: `, allSessions.sessions);
-  if (sortType == SortType.Name) {
-      allSessions.sessions.sort((a, b) => a.appid - b.appid);
-  }
-  if (sortType == SortType.Time) {
-      allSessions.sessions.sort(compareTime);
-  }
-  if (sortType == SortType.SessionName) {
-      allSessions.sessions.sort(sortByName);
-  }
+  allSessions.sessions.sort(compareTime);
   console.log(`After: `, allSessions.sessions);
   console.log(allSessions.sessions);
   allSessions.sessions.forEach((session, _index) => {
@@ -71,26 +43,8 @@ function ViewHostedSessions() {
   }
 
   const [hostedSessions, setHostedSessions] = useState<SessionDataResponse | undefined>(undefined);
-  const [sortType, setSortType] = useState<SortType>(SortType.None);
-  const [sortTypeText, setSortTypeText] = useState<string>("Not Sorting");
   const [sessCount, setSessCount] = useState(0);
   const [showNoSessionMessage, setShowNoSessionMessage] = useState(false);
-
-  const handleSortClick = () => {
-    if (sortType == SortType.None) {
-    setSortTypeText("Sort by ##APPID;REPLACE");
-    setSortType(SortType.Name);
-    } else if (sortType == SortType.Name) {
-    setSortTypeText("Sort by Time");
-    setSortType(SortType.Time);
-    } else if (sortType == SortType.Time) {
-    setSortTypeText("Sort by Session Name");
-    setSortType(SortType.SessionName);
-    } else {
-    setSortTypeText("Sort by ##APPID;REPLACE");
-    setSortType(SortType.Name);
-    }
-  };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -111,9 +65,7 @@ function ViewHostedSessions() {
   let SessionsRowsOfTwo: Session[][] = [];
   if (hostedSessions !== undefined) {
       SessionsRowsOfTwo = groupSessionsIntoRowsOfTwo(
-      hostedSessions,
-      sortType
-      );
+      hostedSessions);
   }
   console.log("COUNT", hostedSessions?.session_count)
 
@@ -124,13 +76,7 @@ function ViewHostedSessions() {
         <div className = "justify-center items-center flex">
             <div className='CONTAINER_FOR_SESSIONS text-white text-5xl font-bold mb-8 text-center w-[55%] justify-between items-center'>
             <div className="flex items-center justify-between mb-4">
-                <span className='text-white text-5xl font-bold underline'>Hosted Sessions</span>
-                <div>  
-                  {sessCount > 1 && 
-                    <button className='ml-5 bg-blue-700 hover:bg-blue-900 px-4 py-2 rounded-lg font-bold text-base mt-2' onClick={handleSortClick}> {sortTypeText}
-                  </button>}
-                    
-                </div> 
+                <span className='text-white text-5xl font-bold underline'>Hosted Sessions</span> 
             </div>        
                 {sessCount !== 0 ? (
                     SessionsRowsOfTwo.map((sessionRow, index) => (

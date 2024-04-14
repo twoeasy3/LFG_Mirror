@@ -24,3 +24,8 @@ export function validatePassWord(password:string){
 export function verifySteamID(id: string): boolean {
     return id.length === 17;
 }
+
+export function verifyUsername(username: string): boolean{
+    const isValid = /^[\w-]+$/.test(username);
+    return isValid;
+}

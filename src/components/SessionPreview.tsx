@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Session, buildDateStringFromStamp } from "../bin/SessionLogic";
+import { Session, buildDateStringFromStamp, checkSessionFull } from "../bin/SessionLogic";
 import { checkIfOwnGame, GameData } from "../bin/GetOwnedGames";
 import { useNavigate } from "react-router-dom";
 import { UserProfileInterface } from "../bin/UserProfileLogic";
 import { getUserFromID } from "../bin/UserProfileLogic";
 import { isTimeInPast } from "../bin/SessionLogic";
+import { checkAccepted, getParticipants } from "../bin/RequestLogic";
 interface SessionPreviewProps {
   PreviewSession: Session | null;
 }
@@ -26,6 +27,10 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
     const [hostButtonText, setHostButtonText] = useState("Your Session");
     const [sessionOverText, setSessionOverText] = useState("Session Ended");
     const [joinedSessionText, setjoinedSessionText] = useState("Session Joined");
+    const [requestedText, setRequestedText] = useState("Session Requested");
+    const [joinSessionText, setJoinSessionText] = useState("Join Session");
+    const [sessionFullText, setSessionFullText] = useState("Session Full");
+    const [isFull, setIsFull] = useState(false);
     const [hostUser, setHostUser] = useState<UserProfileInterface>({
       id: -1,
       username: "Fetching user...",
@@ -37,6 +42,9 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
       email: "unknown@unknown.com",
       avatar_hash: "fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb"
     });
+    const [acceptedParticipants, setAcceptedParticipants] = useState<Number[]>([]);
+    const [requested, setRequested] = useState(true);
+    const [delay, setDelay] = useState(false);
 
     const navigate = useNavigate();
     const handleSessionClick = () => {
@@ -65,8 +73,48 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
         }
       };
 
+      const fetchAcceptedParticipants = async () => {
+        const response = await getParticipants(PreviewSession.id);
+        setAcceptedParticipants(response);
+      }
+
+      const checkRequested = async () => {
+        const userID = parseInt(localStorage.getItem("userID")!);
+        if (PreviewSession.participants.includes(userID)) {
+            const response = await checkAccepted(PreviewSession.id, userID);
+            if (response){
+              setRequested(false);
+            }
+            else{
+              setRequested(true);
+            }
+        }
+    }
+
+    const checkFull = async() => {
+      const response = await checkSessionFull(PreviewSession.id);
+      if (response){
+        setIsFull(true);
+      }
+      else{
+        setIsFull(false);
+      }
+    }
+
       fetchHost();
+      fetchAcceptedParticipants();
+      checkRequested();
+      checkFull();
     }, []);
+
+    useEffect(()=>{
+      setDelay(false);
+      const timer = setTimeout(() => {
+        setDelay(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+      
+    },[])
 
     const handleGameNotOwnedClick = () => {
       const url = `steam://store/${PreviewSession.appid}`;
@@ -79,22 +127,24 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
     };
     const handleMouseHover = () => {
       setNotOwnedButtonText("Store Page");
-      setHostButtonText("Edit Session");
+      setHostButtonText("View Session");
       setSessionOverText("Rate Users");
       setjoinedSessionText("View Session");
+      setRequestedText("View Session");
+      setJoinSessionText("View Session");
+      setSessionFullText("View Session")
     };
     const handleMouseLeave = () => {
       setNotOwnedButtonText("Game Not Owned");
       setHostButtonText("Your Session");
       setSessionOverText("Session Ended");
       setjoinedSessionText("Session Joined");
+      setRequestedText("Session Requested");
+      setJoinSessionText("Join Session");
+      setSessionFullText("Session Full")
     };
 
-    const handleEditSessionClick = () => {
-      navigate(`/EditSession/${PreviewSession.id}`);
-    };
-
-    return (
+    return ( delay &&
       <div className="SESSION_PREVIEW_CONTAINER justify-center w-full mb-5 mt-5 mr-2 ml-2 flex flex-row items-top rounded-2xl p-1 bg-[#2d44f5be] pr-2">
         <div className="SESSION_PREVIEW_INFO_CONTAINER flex flex-col justify-center w-1/2 py-2">
           <h2 className="ml-5 text-sm text-[#f7a72f] text-center font-extrabold ">
@@ -107,8 +157,7 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
             Time: {buildDateStringFromStamp(PreviewSession.time)}{" "}
           </h2>
           <h2 className="ml-5 text-sm text-[#f7a72f] text-center font-extrabold ">
-            {PreviewSession.participants.length}/{PreviewSession.max_no_player}{" "}
-            players signed up
+            Session size: {acceptedParticipants.length + 1}/{PreviewSession.max_no_player}{" "}
           </h2>
           <h2 className="ml-5 text-sm text-[#f7a72f] text-center font-extrabold ">
             Gamemode: {PreviewSession.game_mode}{" "}
@@ -138,29 +187,55 @@ export const SessionPreview: React.FC<SessionPreviewProps> = ({
             </button>
           ) : PreviewSession.host_user == localStorage.getItem("userID") ? (
             <button
-              className="ml-5 bg-cyan-500 hover:bg-cyan-700 p-4 rounded-lg font-bold text-xl mt-2"
-              onClick={handleEditSessionClick}
+              className="ml-5 bg-cyan-600 hover:bg-cyan-900 p-4 rounded-lg font-bold text-xl mt-2"
+              onClick={handleSessionClick}
               onMouseEnter={handleMouseHover}
               onMouseLeave={handleMouseLeave}
             >
               {hostButtonText}
             </button>
-          ) : PreviewSession.participants.includes(parseInt(localStorage.getItem("userID")!)) ? (
-            <button
-              className="ml-5 bg-yellow-500 hover:bg-yellow-700 p-4 rounded-lg font-bold text-xl mt-2"
+          ) : PreviewSession.participants.includes(parseInt(localStorage.getItem("userID")!)) ? 
+          ((requested ? <button
+            className="ml-5 bg-yellow-500 hover:bg-yellow-700 p-4 rounded-lg font-bold text-xl mt-2"
+            onClick={handleSessionClick}
+            onMouseEnter={handleMouseHover}
+            onMouseLeave={handleMouseLeave}
+          >
+            {requestedText}
+          </button>
+          : 
+          <button
+            className="ml-5 bg-orange-500 hover:bg-orange-700 p-4 rounded-lg font-bold text-xl mt-2"
+            onClick={handleSessionClick}
+            onMouseEnter={handleMouseHover}
+            onMouseLeave={handleMouseLeave}
+          >
+            {joinedSessionText}
+          </button>
+          )
+            
+          ) : ownedGames !== null &&
+            checkIfOwnGame(ownedGames, PreviewSession.appid) ? 
+            isFull ? 
+            ( 
+              <button
+              className="ml-5 bg-red-600 hover:bg-red-900 p-4 rounded-lg font-bold text-xl mt-2"
               onClick={handleSessionClick}
               onMouseEnter={handleMouseHover}
               onMouseLeave={handleMouseLeave}
             >
-              {joinedSessionText}
+              {sessionFullText}
             </button>
-          ) : ownedGames !== null &&
-            checkIfOwnGame(ownedGames, PreviewSession.appid) ? (
+
+            ) 
+            : (
             <button
-              className="ml-5 bg-green-500 hover:bg-green-700 p-4 rounded-lg font-bold text-xl mt-2"
+              className="ml-5 bg-green-600 hover:bg-green-700 p-4 rounded-lg font-bold text-xl mt-2"
               onClick={handleSessionClick}
+              onMouseEnter={handleMouseHover}
+              onMouseLeave={handleMouseLeave}
             >
-              Join Session
+              {joinSessionText}
             </button>
           ) : (
             <button

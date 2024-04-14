@@ -56,7 +56,7 @@ function Register(){
     }
 
     const checkValidUserName = ()=> {
-        if (username === ""){
+        if (username === "" || !inputValidator.verifyUsername(username)){
             setUsernameErrorMsg(UsernameErrorMessage.format);
             toggleUsernameValidPrompt(true);
             return false;

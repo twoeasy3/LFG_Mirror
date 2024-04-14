@@ -33,6 +33,19 @@ function sortByName(
   return 0;
 }
 
+function sortByGame(
+  a: { game_name: string },
+  b: { game_name: string }
+): number {
+  if (a.game_name.toLowerCase() < b.game_name.toLowerCase()) {
+    return -1;
+  }
+  if (a.game_name.toLowerCase() > b.game_name.toLowerCase()) {
+    return 1;
+  }
+  return 0;
+}
+
 function groupSessionsIntoRowsOfTwo(
   allSessions: { sessions: Session[] },
   showNotOwned: boolean,
@@ -42,7 +55,7 @@ function groupSessionsIntoRowsOfTwo(
   let tempRow: Session[] = [];
   console.log(`Before: `, allSessions.sessions);
   if (sortType == SortType.Name) {
-    allSessions.sessions.sort((a, b) => a.appid - b.appid);
+    allSessions.sessions.sort(sortByGame);
   }
   if (sortType == SortType.Time) {
     allSessions.sessions.sort(compareTime);
@@ -83,26 +96,27 @@ function ViewSessions() {
   >(undefined);
   const [showNotOwned, setShowNotOwned] = useState<boolean>(false);
   const [notOwnedFilterText, setNotOwnedFilterText] = useState<string>(
-    "Hide Unowned Games"
+    "Hiding Unowned Games"
   );
   const [sortType, setSortType] = useState<SortType>(SortType.None);
   const [sortTypeText, setSortTypeText] = useState<string>("Not Sorting");
   const [sessCount, setSessCount] = useState(0);
   const [showNoSessionMessage, setShowNoSessionMessage] = useState(false);
+  const [showSession, setShowSession] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
   const handleNotOwnedClick = () => {
     if (showNotOwned) {
-      setNotOwnedFilterText("Hide Unowned Games");
+      setNotOwnedFilterText("Hiding Unowned Games");
       setShowNotOwned(false);
     } else {
-      setNotOwnedFilterText("Show Unowned Games");
+      setNotOwnedFilterText("Showing Unowned Games");
       setShowNotOwned(true);
     }
   };
   const handleSortClick = () => {
     if (sortType == SortType.None) {
-      setSortTypeText("Sort by ##APPID;REPLACE");
+      setSortTypeText("Sort by Game");
       setSortType(SortType.Name);
     } else if (sortType == SortType.Name) {
       setSortTypeText("Sort by Time");
@@ -111,7 +125,7 @@ function ViewSessions() {
       setSortTypeText("Sort by Session Name");
       setSortType(SortType.SessionName);
     } else {
-      setSortTypeText("Sort by ##APPID;REPLACE");
+      setSortTypeText("Sort by Game");
       setSortType(SortType.Name);
     }
   };
@@ -130,11 +144,13 @@ function ViewSessions() {
 
   useEffect(() => {
     setShowNoSessionMessage(false);
+    setShowSession(false);
     const timeout = setTimeout(() => {
       setShowNoSessionMessage(true);
-    }, 1500);
+      setShowSession(true);
+    }, 500);
     return () => clearTimeout(timeout)
-  }, [refresh])
+  }, [refresh, showNotOwned, sortType])
   
   let SessionsRowsOfTwo: Session[][] = [];
   if (allSessions !== undefined) {
@@ -161,14 +177,14 @@ function ViewSessions() {
                   <button className="pl-2 flex items-center" onClick={handleRefresh}><IoMdRefresh className="pt-2" color="white" size={50}/></button>
                 </div>
                 
-                {sessCount !== 0 && 
+                
                 <div>
                   <button className='bg-blue-700 hover:bg-blue-900 px-4 py-2 rounded-lg font-bold text-base mt-2' onClick={handleNotOwnedClick}> {notOwnedFilterText}</button>   
                   <button className='ml-5 bg-blue-700 hover:bg-blue-900 px-4 py-2 rounded-lg font-bold text-base mt-2' onClick={handleSortClick}> {sortTypeText}</button>  
                 </div>
-                }
+                
               </div>        
-                {sessCount !== 0 ? (
+                {sessCount !== 0 && showSession ? (
                     SessionsRowsOfTwo.map((sessionRow, index) => (
                         <div className = "flex flex-row justify-between">
                         <SessionPreview key={index*2} PreviewSession={sessionRow[0]} />

@@ -194,7 +194,7 @@ export function CreateSession() {
             <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
               Select Game:{" "}
             </h2>
-            <div className="w-5/12 flex flex-row justify-center items-center">
+            <div className="w-1/2 flex flex-row justify-start items-center">
               <div className="GAME_DROPDOWN_SIZER w-4/5">
                 <PromiseOwnedGameSelect
                   onSelectChange={handleGameSelect}
@@ -202,10 +202,7 @@ export function CreateSession() {
                 />
               </div>
               {selectedGame == null ? (
-                <img
-                  className="ml-5 border-[#2d44f5be]"
-                  src="../../banner_loading.jpg"
-                ></img>
+                ""
               ) : (
                 <img
                   className="ml-5 border-[#2d44f5be]"
@@ -245,11 +242,13 @@ export function CreateSession() {
               Language:{" "}
             </h2>
             <div className="LANGUAGE_INPUT_SIZER w-1/2">
-              <Select
-                value={langauge}
-                onChange={handleLanguageChange}
-                options={languageOptions}
-              />
+              <div className="w-4/5">
+                <Select
+                  value={langauge}
+                  onChange={handleLanguageChange}
+                  options={languageOptions}
+                />
+              </div>
             </div>
           </div>
           <div className="MAX-PLAYERS w-full flex flex-row justify-center items-center">

@@ -1,4 +1,5 @@
 import axios from 'axios'; 
+import { UserProfileInterface, getUserFromID, updateUser } from './UserProfileLogic';
 
 export interface ratingInterface{
     session: number
@@ -26,5 +27,19 @@ export const getRating = async (session_id: number, rated_by_id: number, rated_u
     }
     catch(error){
         console.error(`DEBUG getRating session: ${session_id} rated by: ${rated_by_id} rated: ${rated_user_id} NOT FOUND`);
+    }
+}
+
+export async function updateRating(participantId: number, rating: number){
+    try{
+        const user: UserProfileInterface | undefined = await getUserFromID(participantId);
+        if (user){
+            user.rating += rating;
+            await updateUser(user.username, user);
+            console.log("rating for user updated");
+        }
+    }
+    catch (error){
+        console.error("update Rating error", error)
     }
 }

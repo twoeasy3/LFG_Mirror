@@ -147,6 +147,23 @@ export async function getParticipants(sessionID: number):Promise<Number[]>{
     }
 }
 
+export async function checkAccepted(sessionID: number, userID: number):Promise<Boolean>{
+    try {
+        const response = await axios.get(`https://tuanisworkingonsomeproject.pythonanywhere.com/api/sessionlist/?all=False&session_id=${sessionID}&user_id=${userID}`)
+        if (response){
+            if (response.data.status === "Accepted"){
+                console.log("Accepted")
+                return true;
+            }
+        }
+        return false;
+    }
+    catch(error){
+        console.error("error checking accepted");
+        return false;
+    }
+}
+
 export const deleteRequest = async (userID: number, sessionID:number) => {
     try {
         const config = {
@@ -167,3 +184,4 @@ export const deleteRequest = async (userID: number, sessionID:number) => {
         console.error("error deleting request", error);
     }
 }
+

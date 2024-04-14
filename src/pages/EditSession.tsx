@@ -155,7 +155,7 @@ export function EditSession() {
   }
 
   const handleCancelClick = () => {
-    navigate("/ViewSessions");
+    navigate(-1);
   };
 
   const handleConfirmClick = () => {
@@ -220,7 +220,7 @@ export function EditSession() {
       setShowPopup(true); // Show the success popup
       setTimeout(() => {
         setShowPopup(false); // Hide the popup after 1.5 seconds
-        navigate(`/ViewSessions`);
+        navigate(-1);
       }, 1500);
     })
     .catch((error) => {
@@ -235,19 +235,23 @@ export function EditSession() {
           <span className="text-white text-4xl font-bold">Edit Session</span>
         </div>
 
-        <div className="CREATE_SESSION_BOX w-4/5 flex-col rounded-2xl p-2 bg-[#2d44f5] items-center">
-          <div className="SELECT_GAME_ROW_CONTAINER w-full flex justify-center items-center pt-2">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
-              Game:{" "}
+        <div className="EDIT_SESSION_BOX w-4/5 flex-col rounded-2xl p-2 bg-[#2d44f5] items-center">
+
+          <div className="GAME w-full flex justify-center items-center pt-2">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
+              Game: 
             </h2>
-            <h2 className="flex flex-row mr-5 mt-5 mb-5 text-3xl text-white text-center font-extrabold ">{gameName}</h2>
-            <img className="ml-5 border-[#2d44f5be]"
-                src={`https://cdn.akamai.steamstatic.com/steam/apps/${appID}/capsule_231x87.jpg`}
-            ></img>
+            <div className="flex w-1/2 items-center">
+              <h2 className="flex flex-row mr-5 mt-5 mb-5 text-3xl text-white text-center font-extrabold ">{gameName}</h2>
+              <img className="ml-5 border-[#2d44f5be]"
+                  src={`https://cdn.akamai.steamstatic.com/steam/apps/${appID}/capsule_231x87.jpg`}
+              ></img>
+            </div>
+            
           </div>
           
           <div className="SESSION_NAME w-full flex flex-row justify-center items-center">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
               Session Name:{" "}
             </h2>
             <div className="SESSION_NAME_INPUT w-1/2">
@@ -262,7 +266,7 @@ export function EditSession() {
 
           {editTime && 
           <div className="TIME_ROW_CONTAINER w-full flex flex-row justify-center items-center">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
               Select Time:{" "}
             </h2>
             <div className="TIME_INPUT_SIZER w-1/2">
@@ -276,7 +280,7 @@ export function EditSession() {
           </div>}
           
           <div className="GAMEMODE_ROW_CONTAINER w-full flex flex-row justify-center items-center">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
               Gamemode:{" "}
             </h2>
             <div className="GAMEMODE_INPUT_SIZER w-1/2">
@@ -288,20 +292,24 @@ export function EditSession() {
               />
             </div>
           </div>
+
           <div className="LANGUAGE_ROW_CONTAINER w-full flex flex-row justify-center items-center">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right  font-extrabold ">
               Language:{" "}
             </h2>
             <div className="LANGUAGE_INPUT_SIZER w-1/2">
-              <Select
-                value={langauge}
-                onChange={handleLanguageChange}
-                options={languageOptions}
-              />
+              <div className="w-4/5">
+                <Select
+                  value={langauge}
+                  onChange={handleLanguageChange}
+                  options={languageOptions}
+                />
+              </div>
             </div>
           </div>
+
           <div className="MAX-PLAYERS w-full flex flex-row justify-center items-center">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
               Session Size:{" "}
             </h2>
             <div className="PLAYER_INPUT_SIZER w-1/2">
@@ -313,8 +321,9 @@ export function EditSession() {
               />
             </div>
           </div>
+
           <div className="PRE-REQ w-full flex flex-row justify-center items-center">
-            <h2 className="mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-center font-extrabold ">
+            <h2 className="w-1/5 mr-5 mt-5 mb-5 text-3xl text-[#f7a72f] text-right font-extrabold ">
               Pre-Requisite:{" "}
             </h2>
             <div className="GAMEMODE_INPUT_SIZER w-1/2">
@@ -326,6 +335,7 @@ export function EditSession() {
               />
             </div>
           </div>
+
           <div className="DELETE BUTTON w-full flex flex-row justify-center items-center pb-2">
             <button
                 className="bg-[#FF0000] hover:bg-[#ff0000cc] p-4 rounded-lg font-bold text-xl "
@@ -334,6 +344,7 @@ export function EditSession() {
             </button>
           </div>
         </div>
+
         <div className="flex justify-between w-3/5 pt-4">
           <button
               className="bg-red-700 hover:bg-red-900 p-4 rounded-lg font-bold text-xl"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { SessionDataResponse, getHostedSessions } from "../bin/SessionLogic";
+import { SessionDataResponse, getOngoingHostedSessions } from "../bin/SessionLogic";
 import { RequestDataResponse, getRequests } from "../bin/RequestLogic";
 import RequestPreview from "../components/RequestPreview";
 import Topbar from "../components/Topbar";
@@ -27,12 +27,13 @@ function RequestsPage() {
   const [req, setReq] = useState<RequestDataResponse | undefined>(undefined);
   const [showPending, setShowPending] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [showRequest, setShowRequest] = useState(false);
 
   useEffect(() => {
     //if he didn't host any session, can just assume no request
     const fetchData = async () => {
       try {
-        const hostedSessions = await getHostedSessions();
+        const hostedSessions = await getOngoingHostedSessions();
         setHostedSessions(hostedSessions);
         if (hostedSessions && hostedSessions.session_count === 0) {
             console.log("NO HOSTED SESSION DETECTED! 1st useEFFECT")
@@ -80,8 +81,10 @@ function RequestsPage() {
 
   useEffect(() => {
     setShowPending(false);
+    setShowRequest(false);
     const timer = setTimeout(() => {
       setShowPending(true);
+      setShowRequest(true);
     }, 1500);
     return () => clearTimeout(timer);
   }, [refresh])
@@ -100,7 +103,7 @@ function RequestsPage() {
             <span className='text-white text-5xl font-bold underline'>Requests</span>
             <button className="pl-2 flex items-center" onClick={handleRefresh}><IoMdRefresh className="pt-2" color="white" size={50}/></button>
           </div>        
-          {!noReq ? (
+          {!noReq && showRequest ? (
               <div className = "flex-col justify-center items-center">
                 {req?.requests.map((request, index) => (
                   <RequestPreview key={index} request={request}/>

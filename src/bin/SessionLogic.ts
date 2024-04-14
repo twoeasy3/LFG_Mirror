@@ -1,5 +1,6 @@
 import axios from 'axios'; 
 import { GameData } from './GetOwnedGames';
+import { getParticipants } from './RequestLogic';
 
 export enum Status{
     Open = "Open",
@@ -40,9 +41,11 @@ export function compareTime(a: { time: string }, b: { time: string }): number {
     return timeA.getTime() - timeB.getTime();
   }
 export function isTimeInPast(jsonTime: string): boolean {
-    const parsedTime = new Date(jsonTime);
+    const parsedTime = new Date(jsonTime.slice(0,-1));
     
     const currentTime = new Date();
+    console.log("currenTime", currentTime);
+    console.log("parsedTime", parsedTime);
     
     return parsedTime < currentTime;
 }
@@ -86,22 +89,21 @@ export async function getAllSessions():Promise<SessionDataResponse>{
     }
 }
 
-export async function getOngoingSessions():Promise<SessionDataResponse>{
+export async function getOngoingSessions(): Promise<SessionDataResponse> {
     const data = await getAllSessions();
-    let sessionCount = 0;
-    let sessionData: Session[] = [];
-    if (data){
-        for (let i=0; i<data.session_count; i++){
-            if (data.sessions[i].status === "1"){
-                sessionCount += 1;
-                sessionData.push(data.sessions[i]);
-            }
-        }
-    }
+    const currentTime = new Date();
+
+    // Ignore the status field in session
+    const ongoingSessions = data.sessions.filter(session => {
+        const sessionTime = new Date(session.time.slice(0,-1));
+        return sessionTime > currentTime;
+    });
+
     let responseData: SessionDataResponse = {
-        session_count: sessionCount,
-        sessions: sessionData
+        session_count: ongoingSessions.length,
+        sessions: ongoingSessions
     };
+
     console.log("ongoing sessions:", responseData);
     return responseData;
 }
@@ -128,6 +130,25 @@ export async function getHostedSessions():Promise<SessionDataResponse>{
         };
         return responseData;
     }
+    return responseData;
+}
+
+export async function getOngoingHostedSessions(): Promise<SessionDataResponse> {
+    const userid = localStorage.getItem("userID"); 
+    const currentTime = new Date();
+    const data = await getAllSessions();
+
+    const sessionsData: Session[] = data.sessions.filter(session => {
+        const sessionTime = new Date(session.time.slice(0,-1));
+        return session.host_user.toString() === userid && sessionTime > currentTime;
+    });
+
+    const responseData: SessionDataResponse = {
+        session_count: sessionsData.length,
+        sessions: sessionsData
+    };
+
+    console.log("Ongoing hosted sessions:", sessionsData);
     return responseData;
 }
 
@@ -244,36 +265,23 @@ export const deleteSession = async (id: string) => {
         console.error('DEBUG deletesession error:', error);
     }
 }
-// (NOT IN USE)
-// export const removeParticipant = async (sessionid: number, userid: number) => {
-//     try{
-//         const session = await getSessionFromID(sessionid);
-//         if (session){
-//             const removedArray = session.participants.filter(id => id !== userid);
-//             const newSession: Session = {
-//                 session_name: session.session_name,
-//                 appid: session.appid,
-//                 create_at: session.create_at,
-//                 time: session.time,
-//                 max_no_player: session.max_no_player,
-//                 game_mode: session.game_mode,
-//                 language: session.language,
-//                 host_user: session.host_user,
-//                 prereq: session.prereq,
-//                 is_public: true,
-//                 participants: removedArray,
-//                 status: "1", //INDICATES NON-EXPIRED
-//                 game_name: session.game_name,
-//                 id: 0,   
-//             }
-//             console.log("old participants:", session.participants)
-//             console.log("new participants:",removedArray);
-//             console.log("newSession from removeParticipant", newSession)
-//             await updateSession(String(sessionid), newSession);
-//             console.log("Update success!")
-//         }
-//     }
-//     catch(error){
-//         console.error("Error removing participant", error);
-//     }
-// }
+
+export const checkSessionFull = async (id: number) => {
+    try{
+        const session = await getSessionFromID(id);
+        const participants = await getParticipants(id);
+        if (session && participants){
+            const maxPlayers = session.max_no_player - 1;
+            const currentPlayers = participants.length;
+            if (maxPlayers - currentPlayers <= 0){
+                console.log("session is full")
+                return true;
+            }
+        }
+        console.log("session is not full");
+        return false;
+    }
+    catch(error){
+        console.error("error when checking session full");
+    }
+}

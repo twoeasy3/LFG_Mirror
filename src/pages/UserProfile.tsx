@@ -150,7 +150,7 @@ function UserProfile() {
               {/* Rating */}
               <h5 className="mr-5 mt-5 mb-5  text-white text-center font-extrabold text-wrap ">
                 <span className="mr-5 mt-5 mb-5  text-[#f7a72f] text-center font-extrabold ">
-                  Rating:
+                  Overall Rating:
                 </span>
                 {rating}
               </h5>
