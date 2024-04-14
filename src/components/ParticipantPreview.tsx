@@ -88,7 +88,7 @@ function ParticipantPreview({ participantId, canRate, isParticipant }: {particip
               src={`https://avatars.steamstatic.com/${avatarHash}_full.jpg`}
               alt="Profile Picture"
           />
-          <a className='underline pl-2 mr-5' target='_blank' href={`http://localhost:5173/UserProfile/${participant.username}`}>{participant.username}</a>
+          <a className='underline pl-2 mr-5' target='_blank' href={`https://lfg-mirror.vercel.app//UserProfile/${participant.username}`}>{participant.username}</a>
         </div>
         <div className="flex items-center">
           {(canRate && alreadyRated == null && showRate && isParticipant && parseInt(currentUser!) != participantId)?(

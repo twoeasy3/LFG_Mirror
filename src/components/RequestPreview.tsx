@@ -76,7 +76,7 @@ function RequestPreview({ request }: { request: Request }) {
           </div>
           <div className="Request_Info flex justify-start items-center w-full">
             <span className="mr-5 mt-5 mb-5 text-white text-center font-extrabold flex">
-                <a className='underline pr-4' target='_blank' href={`http://localhost:5173/UserProfile/${userName}`}>{userName}</a> wishes to join "{sessName}"!
+                <a className='underline pr-4' target='_blank' href={`https://lfg-mirror.vercel.app//UserProfile/${userName}`}>{userName}</a> wishes to join "{sessName}"!
             </span>
             
           </div>
