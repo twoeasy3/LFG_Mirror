@@ -98,6 +98,7 @@ function SingleSession(){
                         if (host.id.toString() === userID){
                             setShowButton(false);
                             setHost(true);
+                            setIsParticipant(true);
                         }
                         else {
                             const currentTime = new Date();
