@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { fetchAvatar, updateUser } from './UserProfileLogic';
+import { SHA256, enc } from 'crypto-js';
+
 
 interface LoginInterface {
     username: string
@@ -7,7 +9,7 @@ interface LoginInterface {
 }
 
 export const userLogin = async (username: string, password:string) => {
-    let loginAttempt:LoginInterface = {'username':username, 'password': password}
+    let loginAttempt:LoginInterface = {'username':username, 'password': SHA256(password).toString(enc.Hex)}
     try {
         const response = await axios.post('https://twoeasy3.pythonanywhere.com/api/log_in', loginAttempt);
         console.log('DEBUG login attempt:', response.data);
@@ -37,7 +39,7 @@ export const getUser = async (username:string) => {
 
 
 export const changePassword = async (username: string, password:string) => {
-    let passwordUpdate:LoginInterface = {'username':username, 'password': password} //Convenient that this interface fits also huh
+    let passwordUpdate:LoginInterface = {'username':username, 'password': SHA256(password).toString(enc.Hex)} //Convenient that this interface fits also huh
     try {
         const response = await axios.post('https://twoeasy3.pythonanywhere.com/api/resetPassword', passwordUpdate);
         console.log('DEBUG change pass attempt:', response.data);

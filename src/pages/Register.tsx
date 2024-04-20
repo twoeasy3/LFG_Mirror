@@ -2,6 +2,7 @@ import { useState, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import * as inputValidator from '../bin/inputValidator';
 import axios from 'axios';
+import { SHA256, enc } from 'crypto-js';
 
 enum EmailErrorMessage {
     format = "Invalid email format",
@@ -145,7 +146,7 @@ function Register(){
         const apiLink = "https://tuanisworkingonsomeproject.pythonanywhere.com/api/user/"
         const text = {
             "username": username,
-            "password_hash256": password,
+            "password_hash256":  SHA256(password).toString(enc.Hex),
             "email": email,
             "steamID": steamId
         }
